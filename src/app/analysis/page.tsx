@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Line } from "react-chartjs-2";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import "chart.js/auto";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Line } from 'react-chartjs-2';
+import { Table, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import 'chart.js/auto';
 
 function AnalysisPage() {
   const [sales, setSales] = useState(0);
@@ -15,11 +14,11 @@ function AnalysisPage() {
     bounceRate: 0,
     traffic: 0,
   });
-  const [pageDetails, setPageDetails] = useState([
-    { url: "/home", visits: 1500, avgTimeSpent: "3m 15s" },
-    { url: "/products", visits: 1200, avgTimeSpent: "4m 10s" },
-    { url: "/contact", visits: 700, avgTimeSpent: "2m 30s" },
-  ]);
+  // const [pageDetails, setPageDetails] = useState([
+  //   { url: '/home', visits: 1500, avgTimeSpent: '3m 15s' },
+  //   { url: '/products', visits: 1200, avgTimeSpent: '4m 10s' },
+  //   { url: '/contact', visits: 700, avgTimeSpent: '2m 30s' },
+  // ]);
 
   // Mock fetch for data (Replace with your API calls)
   useEffect(() => {
@@ -35,13 +34,13 @@ function AnalysisPage() {
 
   // Line chart data for traffic
   const trafficData = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
-        label: "Daily Traffic",
+        label: 'Daily Traffic',
         data: [500, 600, 700, 550, 800, 750, 900],
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
         tension: 0.4,
       },
     ],
@@ -86,8 +85,18 @@ function AnalysisPage() {
             <CardTitle>Performance Metrics</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Average Load Time: <span className="font-bold">{webpagePerformance.avgLoadTime}s</span></p>
-            <p>Bounce Rate: <span className="font-bold">{webpagePerformance.bounceRate}%</span></p>
+            <p>
+              Average Load Time:{' '}
+              <span className="font-bold">
+                {webpagePerformance.avgLoadTime}s
+              </span>
+            </p>
+            <p>
+              Bounce Rate:{' '}
+              <span className="font-bold">
+                {webpagePerformance.bounceRate}%
+              </span>
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -95,7 +104,7 @@ function AnalysisPage() {
             <CardTitle>Traffic Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <Line data={trafficData}  />
+            <Line data={trafficData} />
           </CardContent>
         </Card>
       </div>
@@ -111,7 +120,7 @@ function AnalysisPage() {
               <TableHead>Avg Time Spent</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          {/* <TableBody>
             {pageDetails.map((page) => (
               <TableRow key={page.url}>
                 <TableCell>{page.url}</TableCell>
@@ -119,7 +128,7 @@ function AnalysisPage() {
                 <TableCell>{page.avgTimeSpent}</TableCell>
               </TableRow>
             ))}
-          </TableBody>
+          </TableBody> */}
         </Table>
       </div>
     </div>

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -8,12 +8,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogTrigger, DialogContent, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+} from '@/components/ui/select';
 
 interface Product {
   id: string;
@@ -28,7 +39,7 @@ interface Product {
 
 function AllProductsPage() {
   const [products, setProducts] = useState<Product[]>([]); // Mock data fetched from an API
-  const [sortKey, setSortKey] = useState<keyof Product>("title");
+  const [sortKey, setSortKey] = useState<keyof Product>('title');
   const [isAscending, setIsAscending] = useState(true);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
 
@@ -37,24 +48,24 @@ function AllProductsPage() {
     const fetchProducts = async () => {
       const mockProducts: Product[] = [
         {
-          id: "1",
-          title: "Product A",
-          description: "Description of Product A",
-          deployLink: "https://example.com/a",
-          image: "/images/product-a.jpg",
-          type: "Type A",
+          id: '1',
+          title: 'Product A',
+          description: 'Description of Product A',
+          deployLink: 'https://example.com/a',
+          image: '/images/product-a.jpg',
+          type: 'Type A',
           price: 50,
-          productLink: "/files/product-a.zip",
+          productLink: '/files/product-a.zip',
         },
         {
-          id: "2",
-          title: "Product B",
-          description: "Description of Product B",
-          deployLink: "https://example.com/b",
-          image: "/images/product-b.jpg",
-          type: "Type B",
+          id: '2',
+          title: 'Product B',
+          description: 'Description of Product B',
+          deployLink: 'https://example.com/b',
+          image: '/images/product-b.jpg',
+          type: 'Type B',
           price: 100,
-          productLink: "/files/product-b.zip",
+          productLink: '/files/product-b.zip',
         },
       ];
       setProducts(mockProducts);
@@ -77,16 +88,18 @@ function AllProductsPage() {
   // Handle Delete
   const handleDelete = (id: string) => {
     setProducts((prev) => prev.filter((product) => product.id !== id));
-    alert("Product deleted!");
+    alert('Product deleted!');
   };
 
   // Handle Edit Save
   const handleSave = (updatedProduct: Product) => {
     setProducts((prev) =>
-      prev.map((product) => (product.id === updatedProduct.id ? updatedProduct : product))
+      prev.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product,
+      ),
     );
     setEditProduct(null);
-    alert("Product updated!");
+    alert('Product updated!');
   };
 
   return (
@@ -104,7 +117,7 @@ function AllProductsPage() {
           </SelectContent>
         </Select>
         <Button variant="outline" onClick={() => setIsAscending(!isAscending)}>
-          {isAscending ? "Ascending" : "Descending"}
+          {isAscending ? 'Ascending' : 'Descending'}
         </Button>
       </div>
       <Table>
@@ -141,23 +154,31 @@ function AllProductsPage() {
                     >
                       <Label>Title</Label>
                       <Input
-                        value={editProduct?.title || ""}
+                        value={editProduct?.title || ''}
                         onChange={(e) =>
-                          setEditProduct((prev) => prev && { ...prev, title: e.target.value })
+                          setEditProduct(
+                            (prev) =>
+                              prev && { ...prev, title: e.target.value },
+                          )
                         }
                       />
                       <Label>Description</Label>
                       <Input
-                        value={editProduct?.description || ""}
+                        value={editProduct?.description || ''}
                         onChange={(e) =>
-                          setEditProduct((prev) => prev && { ...prev, description: e.target.value })
+                          setEditProduct(
+                            (prev) =>
+                              prev && { ...prev, description: e.target.value },
+                          )
                         }
                       />
                       <Label>Type</Label>
                       <Input
-                        value={editProduct?.type || ""}
+                        value={editProduct?.type || ''}
                         onChange={(e) =>
-                          setEditProduct((prev) => prev && { ...prev, type: e.target.value })
+                          setEditProduct(
+                            (prev) => prev && { ...prev, type: e.target.value },
+                          )
                         }
                       />
                       <Label>Price</Label>
@@ -165,7 +186,13 @@ function AllProductsPage() {
                         type="number"
                         value={editProduct?.price || 0}
                         onChange={(e) =>
-                          setEditProduct((prev) => prev && { ...prev, price: parseFloat(e.target.value) })
+                          setEditProduct(
+                            (prev) =>
+                              prev && {
+                                ...prev,
+                                price: parseFloat(e.target.value),
+                              },
+                          )
                         }
                       />
                       <DialogFooter>

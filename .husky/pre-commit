@@ -1,0 +1,1 @@
+npm run write && npm run check && npm run lint 

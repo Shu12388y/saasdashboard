@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 interface Product {
   title: string;
@@ -15,27 +15,32 @@ interface Product {
   type: string;
   price: number;
   productLink: File | null;
+  category: string;
 }
 
 function ProductCreationPage() {
   const [product, setProduct] = useState<Product>({
-    title: "",
-    description: "",
-    deployLink: "",
+    title: '',
+    description: '',
+    deployLink: '',
     image: null,
-    type: "",
+    type: '',
     price: 0,
     productLink: null,
+    category: '',
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [productFileName, setProductFileName] = useState<string | null>(null);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: name === "price" ? parseFloat(value) || 0 : value }));
+    setProduct((prev) => ({
+      ...prev,
+      [name]: name === 'price' ? parseFloat(value) || 0 : value,
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,18 +50,17 @@ function ProductCreationPage() {
     const file = files[0];
     setProduct((prev) => ({ ...prev, [name]: file }));
 
-    if (name === "image") {
+    if (name === 'image') {
       setImagePreview(URL.createObjectURL(file));
-    } else if (name === "productLink") {
+    } else if (name === 'productLink') {
       setProductFileName(file.name);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate a file upload or API call
-    console.log("Product details:", product);
-    alert("Product created successfully!");
+    console.log('Product details:', product);
+    alert('Product created successfully!');
   };
 
   return (
@@ -101,6 +105,16 @@ function ProductCreationPage() {
               />
             </div>
             <div>
+              <Label htmlFor="type">Category</Label>
+              <Input
+                id="category"
+                name="category"
+                placeholder="Enter product catgory"
+                value={product.category}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
               <Label htmlFor="price">Price</Label>
               <Input
                 id="price"
@@ -130,11 +144,18 @@ function ProductCreationPage() {
                 type="file"
                 onChange={handleFileChange}
               />
-              {productFileName && <p className="mt-2">Uploaded File: {productFileName}</p>}
+              {productFileName && (
+                <p className="mt-2">Uploaded File: {productFileName}</p>
+              )}
             </div>
             <div>
               <Label htmlFor="image">Upload Image</Label>
-              <Input id="image" name="image" type="file" onChange={handleFileChange} />
+              <Input
+                id="image"
+                name="image"
+                type="file"
+                onChange={handleFileChange}
+              />
               {imagePreview && (
                 <img
                   src={imagePreview}

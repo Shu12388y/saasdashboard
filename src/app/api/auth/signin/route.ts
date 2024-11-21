@@ -1,21 +1,45 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { User } from '@/app/model/User.model';
 
 export const POST = async (request: NextRequest) => {
   try {
-    const data = await request.formData();
-    console.log(data);
-    // Redirect to "/" after successfully processing the form data
-    return NextResponse.redirect(new URL("/", request.url));
-  } catch (error: any) {
-    console.error("Error processing form data:", error);
+    const { email, password } = await request.json();
+    if (!email && !password) {
+      return NextResponse.json(
+        { message: 'Email is requried' },
+        { status: 401 },
+      );
+    }
 
-    // Return an error response
-    return NextResponse.json(
-      {
-        error: "Failed to process the form data",
-        message: error.message,
-      },
-      { status: 500 }
+    const findUser = await User.findOne({ email: email });
+    if (!findUser) {
+      return NextResponse.json(
+        { message: 'User not founded' },
+        { status: 401 },
+      );
+    }
+
+    const checkPassword = await bcrypt.compare(password, findUser.password);
+
+    if (!checkPassword) {
+      return NextResponse.json({ message: 'Wrong password' }, { status: 403 });
+    }
+
+    const creatToken = await jwt.sign(
+      JSON.stringify(findUser._id),
+      'secertkey',
     );
+
+    if (!creatToken) {
+      return NextResponse.json({ message: 'Token Error' }, { status: 500 });
+    }
+    return NextResponse.json(
+      { message: 'Success', token: creatToken },
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json({ message: error }, { status: 500 });
   }
 };
