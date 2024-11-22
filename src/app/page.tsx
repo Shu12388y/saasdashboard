@@ -15,12 +15,12 @@ interface User {
 }
 
 export default function Home() {
+  const token = window.localStorage.getItem('token');
   useEffect(() => {
-    const token = window.localStorage.getItem('token');
     if (token) {
       Router.push('/product');
     }
-  }, []);
+  }, [token]);
   const Router = useRouter();
   const [user, setUser] = useState<User>({
     email: '',

@@ -25,6 +25,7 @@ import {
   SelectValue,
   SelectItem,
 } from '@/components/ui/select';
+import axios from 'axios';
 
 interface Product {
   id: string;
@@ -42,33 +43,23 @@ function AllProductsPage() {
   const [sortKey, setSortKey] = useState<keyof Product>('title');
   const [isAscending, setIsAscending] = useState(true);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Fetch products (replace with actual API call)
   useEffect(() => {
     const fetchProducts = async () => {
-      const mockProducts: Product[] = [
-        {
-          id: '1',
-          title: 'Product A',
-          description: 'Description of Product A',
-          deployLink: 'https://example.com/a',
-          image: '/images/product-a.jpg',
-          type: 'Type A',
-          price: 50,
-          productLink: '/files/product-a.zip',
-        },
-        {
-          id: '2',
-          title: 'Product B',
-          description: 'Description of Product B',
-          deployLink: 'https://example.com/b',
-          image: '/images/product-b.jpg',
-          type: 'Type B',
-          price: 100,
-          productLink: '/files/product-b.zip',
-        },
-      ];
-      setProducts(mockProducts);
+      try {
+        setLoading(true);
+        const data = await axios.get('/api/product/allproduct');
+        if (data) {
+          setLoading(false);
+        }
+        console.log(data.data.data);
+        setProducts(data.data.data);
+      } catch (error) {
+        console.log(error);
+        setProducts([]);
+      }
     };
     fetchProducts();
   }, []);
@@ -131,86 +122,92 @@ function AllProductsPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.title}</TableCell>
-              <TableCell>{product.description}</TableCell>
-              <TableCell>{product.type}</TableCell>
-              <TableCell>${product.price}</TableCell>
-              <TableCell className="flex gap-2">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button size="sm" variant="outline">
-                      Edit
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (editProduct) handleSave(editProduct);
-                      }}
-                      className="space-y-4"
+          {loading
+            ? 'Loading....'
+            : products.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell>{product.title}</TableCell>
+                  <TableCell>{product.description}</TableCell>
+                  <TableCell>{product.type}</TableCell>
+                  <TableCell>${product.price}</TableCell>
+                  <TableCell className="flex gap-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button size="sm" variant="outline">
+                          Edit
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            if (editProduct) handleSave(editProduct);
+                          }}
+                          className="space-y-4"
+                        >
+                          <Label>Title</Label>
+                          <Input
+                            value={editProduct?.title || ''}
+                            onChange={(e) =>
+                              setEditProduct(
+                                (prev) =>
+                                  prev && { ...prev, title: e.target.value },
+                              )
+                            }
+                          />
+                          <Label>Description</Label>
+                          <Input
+                            value={editProduct?.description || ''}
+                            onChange={(e) =>
+                              setEditProduct(
+                                (prev) =>
+                                  prev && {
+                                    ...prev,
+                                    description: e.target.value,
+                                  },
+                              )
+                            }
+                          />
+                          <Label>Type</Label>
+                          <Input
+                            value={editProduct?.type || ''}
+                            onChange={(e) =>
+                              setEditProduct(
+                                (prev) =>
+                                  prev && { ...prev, type: e.target.value },
+                              )
+                            }
+                          />
+                          <Label>Price</Label>
+                          <Input
+                            type="number"
+                            value={editProduct?.price || 0}
+                            onChange={(e) =>
+                              setEditProduct(
+                                (prev) =>
+                                  prev && {
+                                    ...prev,
+                                    price: parseFloat(e.target.value),
+                                  },
+                              )
+                            }
+                          />
+                          <DialogFooter>
+                            <Button type="submit">Save</Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDelete(product.id)}
                     >
-                      <Label>Title</Label>
-                      <Input
-                        value={editProduct?.title || ''}
-                        onChange={(e) =>
-                          setEditProduct(
-                            (prev) =>
-                              prev && { ...prev, title: e.target.value },
-                          )
-                        }
-                      />
-                      <Label>Description</Label>
-                      <Input
-                        value={editProduct?.description || ''}
-                        onChange={(e) =>
-                          setEditProduct(
-                            (prev) =>
-                              prev && { ...prev, description: e.target.value },
-                          )
-                        }
-                      />
-                      <Label>Type</Label>
-                      <Input
-                        value={editProduct?.type || ''}
-                        onChange={(e) =>
-                          setEditProduct(
-                            (prev) => prev && { ...prev, type: e.target.value },
-                          )
-                        }
-                      />
-                      <Label>Price</Label>
-                      <Input
-                        type="number"
-                        value={editProduct?.price || 0}
-                        onChange={(e) =>
-                          setEditProduct(
-                            (prev) =>
-                              prev && {
-                                ...prev,
-                                price: parseFloat(e.target.value),
-                              },
-                          )
-                        }
-                      />
-                      <DialogFooter>
-                        <Button type="submit">Save</Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(product.id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
         </TableBody>
       </Table>
     </div>

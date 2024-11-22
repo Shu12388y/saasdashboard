@@ -6,6 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
+import axios from 'axios';
+
 
 interface Product {
   title: string;
@@ -19,6 +23,7 @@ interface Product {
 }
 
 function ProductCreationPage() {
+  const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState<Product>({
     title: '',
     description: '',
@@ -57,16 +62,52 @@ function ProductCreationPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Product details:', product);
-    alert('Product created successfully!');
+    try {
+      const formData = new FormData();
+      setLoading(true);
+
+      // Append all fields to FormData
+      Object.keys(product).forEach((key) => {
+        const value = (product)[key];
+        if (value) {
+          formData.append(key, value);
+        }
+      });
+
+      const { data } = await axios.post(
+        '/api/product/createproduct',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      console.log(data.message);
+      if (data.message == 'Created') {
+        setLoading(false);
+        toast('Product cre+ated successfully!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+      toast('Error');
+    }
   };
 
   return (
     <div className="p-6 w-full">
+      <Toaster />
       <h1 className="text-2xl font-bold mb-6">Create a New Product</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6"
+        encType="multipart/form-data"
+      >
         <Card>
           <CardHeader>
             <CardTitle>Product Information</CardTitle>
@@ -166,8 +207,14 @@ function ProductCreationPage() {
             </div>
           </CardContent>
         </Card>
-        <Button type="submit" variant="default" className="w-full">
-          Create Product
+        <Button
+          type="submit"
+          variant="default"
+          className="w-full"
+          disabled={loading}
+        >
+          {/* Create Product */}
+          {loading ? 'Loading....' : 'Create Product'}
         </Button>
       </form>
     </div>
